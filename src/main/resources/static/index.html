@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub User Info</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #0070f3;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #0070f3;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        .user-info {
+            margin-top: 20px;
+            text-align: left;
+            display: none;
+        }
+
+        .user-info img {
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .user-info h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #0070f3;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+        }
+
+        .user-info strong {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>GitHub User Info</h1>
+    <form id="userForm">
+        <input type="text" id="username" placeholder="Enter GitHub Username" required>
+        <button type="submit">Get User Info</button>
+    </form>
+    <div id="user-info" class="user-info">
+        <img id="avatar" src="" alt="User Avatar" width="100">
+        <h2 id="name"></h2>
+        <p><strong>Username:</strong> <span id="login"></span></p>
+        <p><strong>Bio:</strong> <span id="bio"></span></p>
+        <p><strong>Location:</strong> <span id="location"></span></p>
+        <p><strong>Public Repos:</strong> <span id="public-repos"></span></p>
+        <p><strong>Followers:</strong> <span id="followers"></span></p>
+    </div>
+</div>
+<script>
+    const form = document.getElementById('userForm');
+    const userInfoDiv = document.getElementById('user-info');
+    const avatarImg = document.getElementById('avatar');
+    const nameElement = document.getElementById('name');
+    const loginElement = document.getElementById('login');
+    const bioElement = document.getElementById('bio');
+    const locationElement = document.getElementById('location');
+    const publicReposElement = document.getElementById('public-repos');
+    const followersElement = document.getElementById('followers');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        try {
+            const response = await fetch(`/users/${username}`);
+            if (!response.ok) {
+                throw new Error('User not found');
+            }
+            const data = await response.json();
+            userInfoDiv.style.display = 'block';
+            avatarImg.src = data.avatar_url;
+            nameElement.textContent = data.name || 'No name provided';
+            loginElement.textContent = data.login;
+            bioElement.textContent = data.bio || 'No bio available';
+            locationElement.textContent = data.location || 'Location not provided';
+            publicReposElement.textContent = data.public_repos;
+            followersElement.textContent = data.followers;
+        } catch (error) {
+            alert(error.message);
+            userInfoDiv.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
